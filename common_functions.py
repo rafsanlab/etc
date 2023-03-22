@@ -9,7 +9,6 @@ Dublin, Ireland.
 from pathlib import Path
 import numpy as np
 import os
-from os import path
 
 def getdata(PATH:str, FILE_FORMAT:str, VERBOSE:bool):
   '''
@@ -53,11 +52,11 @@ def createdir(pathx:str, verbose=True):
 
   """
   pathx = Path(pathx)
-  if path.exists(pathx) == False:
+  if os.path.exists(pathx) == False:
     os.makedirs(pathx)
     if verbose == True: 
       print('Path created.')
-  elif path.exists(pathx) == True:
+  elif os.path.exists(pathx) == True:
     if verbose == True:
       print('Path already exist.')
   return pathx
