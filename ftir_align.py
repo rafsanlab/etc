@@ -6,6 +6,7 @@ Dublin, Ireland.
 
 """
 import cv2
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import jaccard_score
