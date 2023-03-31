@@ -378,67 +378,67 @@ def plotRxC(nrows=1, ncols=2, dpi=120, figsize=(9,3),
 
 
 def readmat(filename):
-"""
-function to read matlab file from OPUS FTIR Bruker
+  """
+  function to read matlab file from OPUS FTIR Bruker
 
-Parameters
-----------
-filename : filename and directory location       
+  Parameters
+  ----------
+  filename : filename and directory location       
 
-Returns
--------
-w(int) : Width of Image
-h(int) : Height of Image
-p(array) : Image Data p(wavenmber,h,w)
-wavenumber(array)  : Wavenumber arary (ex. 800-1000)
-sp : Image Data sp(wavenumber,w*h)
-"""
-filename, file_extension = os.path.splitext(filename)
-if (file_extension == '.dms'):
-print(file_extension)
-w, h, p, wavenumbers, sp = agiltooct(filename) 
-return  w, h, p, wavenumbers, sp    
-else:     
-s = sio.loadmat(filename)
-info = sio.whosmat(filename)
-ss = s[(str(info[0][0]))]
-wavenumber=ss[:,0]
-sizex = len(wavenumber)
-sizemx, sizemy = np.shape(ss)
-sp = ss[:,1:]
-if (len(info)) > 1:
-    (l,*_) = s['wh']
-    w , h = l
-else:      
-    w = int(np.sqrt(sp.shape[1]))
-    h = sp.shape[1] // w
-    if w * h != sp.shape[1]:
-	w = sp.shape[1]
-	h = 1
-p = sp.reshape(sizex,h,w,order='C')
-return  w, h, p, wavenumber, sp
+  Returns
+  -------
+  w(int) : Width of Image
+  h(int) : Height of Image
+  p(array) : Image Data p(wavenmber,h,w)
+  wavenumber(array)  : Wavenumber arary (ex. 800-1000)
+  sp : Image Data sp(wavenumber,w*h)
+  """
+  filename, file_extension = os.path.splitext(filename)
+  if (file_extension == '.dms'):
+      print(file_extension)
+      w, h, p, wavenumbers, sp = agiltooct(filename) 
+      return  w, h, p, wavenumbers, sp    
+  else:     
+      s = sio.loadmat(filename)
+      info = sio.whosmat(filename)
+      ss = s[(str(info[0][0]))]
+      wavenumber=ss[:,0]
+      sizex = len(wavenumber)
+      sizemx, sizemy = np.shape(ss)
+      sp = ss[:,1:]
+      if (len(info)) > 1:
+          (l,*_) = s['wh']
+          w , h = l
+      else:      
+          w = int(np.sqrt(sp.shape[1]))
+          h = sp.shape[1] // w
+          if w * h != sp.shape[1]:
+              w = sp.shape[1]
+              h = 1
+      p = sp.reshape(sizex,h,w,order='C')
+      return  w, h, p, wavenumber, sp
 
 
 def proarea(p,wavenumbers):
-"""
-FTIR Image Reconstruction 
-Pixel Intensity = Area Under Curve of SPECTRUM
+  """
+  FTIR Image Reconstruction 
+  Pixel Intensity = Area Under Curve of SPECTRUM
+  
+  Parameters
+  ----------
+  sp(array) : (wavenumber,h,w)
+  wavenumbers(array) : wavenumbers
 
-Parameters
-----------
-sp(array) : (wavenumber,h,w)
-wavenumbers(array) : wavenumbers
-
-Returns
--------
-cc(array) : h x w image projection
-"""
-
-i,j,k = np.shape(p)
-wavenumbers = np.sort(wavenumbers) #because data are scanned from high to low
-cc=np.zeros((j,k))
-for ii in range(0,j):
-    for jj in range(0,k):
-	cc[ii,jj]= np.trapz(p[:,ii,jj],wavenumbers)
-# cc = np.trapz(p[:,:,:],wavenumbers,axis=0)
-return cc
+  Returns
+  -------
+  cc(array) : h x w image projection
+  """
+  
+  i,j,k = np.shape(p)
+  wavenumbers = np.sort(wavenumbers) #because data are scanned from high to low
+  cc=np.zeros((j,k))
+  for ii in range(0,j):
+          for jj in range(0,k):
+              cc[ii,jj]= np.trapz(p[:,ii,jj],wavenumbers)
+  # cc = np.trapz(p[:,:,:],wavenumbers,axis=0)
+  return cc
