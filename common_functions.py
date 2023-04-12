@@ -35,7 +35,7 @@ def getdata(PATH:str, FILE_FORMAT:str, VERBOSE:bool):
   data_path = list(PATH.glob(lookfor))
   data_path = sorted(data_path)
   if VERBOSE==True:
-    for i in data_path: print(i); break
+#   for i in data_path: print(i); break
     print(f'Total data paths: {len(data_path)}')
   else:
     pass
