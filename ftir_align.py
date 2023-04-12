@@ -106,7 +106,7 @@ def threshOtsu(
   
   ## apply thresholding
   img = cv.GaussianBlur(img, blur_kernel, 0)
-	if inverse == False:
+  if inverse == False:
     thresh = cv.threshold(img, tval, maxval, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
   elif inverse == True:
     thresh = cv.threshold(img, tval, maxval, cv.THRESH_BINARY_INV + cv.THRESH_OTSU)[1]
