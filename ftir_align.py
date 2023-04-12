@@ -294,6 +294,151 @@ def proKmInverse(img:np.ndarray, point:tuple=(0,0), background:int=0):
   else:
     return img
 
+from sklearn.metrics import jaccard_score
+
+def getCoor(img:np.ndarray, method:str='argmin'):
+  """
+  Get the top, bottom, left and right coordinates of
+  an image (masked 1 and 0 image).
+  
+  Arguments
+  ---------
+    img : 2 channel image with 1 and 0 values
+    method : numpy method either 'argmin' or 'argmax'
+  
+  Returns
+  -------
+    results : a list of the 4 coordinates (top, bot, left, right)
+  
+  """
+
+  w, h = img.shape[0], img.shape[1]
+  coorx, coory = [], []
+
+  # find coor x
+  for i in range(w):
+    arr = img[i,:]
+    minv = np.min(arr)
+    maxv = np.max(arr)
+    if maxv - minv != 0:
+      if method == 'argmin':
+        x = np.argmin(arr)
+      elif method == 'argmax':
+        x = np.argmax(arr)
+      else:
+        raise Exception('Accept only "argmin" or "argmax"..')
+      x = [x, i]
+      coorx.append(x)
+
+  # find coor y
+  for i in range(h):
+    arr = img[:,i]
+    minv = np.min(arr)
+    maxv = np.max(arr)
+    if maxv - minv != 0:
+      if method == 'argmin':
+        x = np.argmin(arr)
+      elif method == 'argmax':
+        x = np.argmax(arr)
+      else:
+        raise Exception('Accept only "argmin" or "argmax"..')
+      x = [i, x]
+      coory.append(x)
+
+  # assemble the coor
+  ptv1, ptv2 = coorx[0], coorx[-1]
+  pth1, pth2 = coory[0], coory[-1]
+  results = [ptv1, ptv2, pth1, pth2]
+
+  return results
+
+def imgsJaccard(img1, img2, average='binary'):
+  """
+  Find the jaccard score of 2 2D images
+  
+  Arguments
+  ---------
+    img1 : an array of first img
+    img2 : an array of seconnd img
+    average : average parameter of jaccard_score(); 'weighted', ‘micro’,
+      ‘macro’, ‘samples’, ‘weighted’, ‘binary’
+  
+  Returns
+  -------
+    score : float of jaccard score
+
+  """
+
+  img1, img2, average = img1, img2, average
+  img1 = img1.astype(int)
+  img2 = img2.astype(int)
+  img1 = img1.reshape(img1.shape[0] * img1.shape[1])
+  img2 = img2.reshape(img2.shape[0] * img2.shape[1])
+  score = jaccard_score(img1, img2, average=average)
+
+  return score
+
+def plotOverlapped(
+    img1:np.ndarray, img2:np.ndarray, img3:np.ndarray,
+    show:bool=True, save:bool=False, filename:str='overlapped.png',
+    dpi:int=150, title_size:int=10, figsize:tuple=(9,3),
+    pts_src=None, pts_ref=None
+    ):
+  """
+  Plot 3 subplots where the third subplot is an overlapped between between the
+  first third and the second image.
+  
+  Arguments
+  ---------
+    img1, img2: array of source and reference image
+    img3 : an array of third img to be overlapped with img2
+    show : bool either to plot or not
+    save  : bool either to save or not
+    filename : image name with img format
+    dpi : dpi of final plot
+    title_size : setting of title size in subplots
+    figsize : figure size of final plot
+    pts_src : [[x1,y1], [x2,y2]] coordinates to mark in img1
+    pts_ref : [[x1,y1], [x2,y2]] coordinates to mark in img2
+  
+  Returns
+  -------
+    plt.show()
+  
+  """
+
+  X, Y = 1, 3
+
+  ## plot the images
+  _, axs = plt.subplots(X, Y, dpi=dpi, figsize=figsize)
+  axs[0].imshow(img1, cmap='coolwarm')
+  axs[1].imshow(img2, cmap='Spectral')
+  axs[2].imshow(img3, cmap='bwr', alpha=0.8)
+  axs[2].imshow(img2, cmap='Spectral', alpha=0.5)
+  for i in range(Y): axs[i].title.set_size(title_size)
+  for i in range(Y): axs[i].set_axis_off()
+  plt.gcf().set_dpi(dpi)
+  plt.tight_layout()
+
+  ## mark the coordinates
+  for pts in pts_src:
+    x = int(pts[0])
+    y = int(pts[1])
+    axs[0].plot(x, y, marker='x', color="white", linewidth=0.5)
+  for pts in pts_ref:
+    x = int(pts[0])
+    y = int(pts[1])
+    axs[1].plot(x, y, marker='x', color="white", linewidth=0.5)
+
+  ## condition of show
+  if show != True: plt.ioff()
+  else: plt.show;
+
+  ## condition of save
+  if save == True:
+    plt.savefig(filename, transparent=True, dpi=dpi)
+    plt.close()
+  else: pass
 
 #### OLD VERSION ####
 
