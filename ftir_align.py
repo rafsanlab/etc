@@ -5,12 +5,160 @@ Dublin, Ireland.
 @author: Rafsanjani @rafsanlab
 
 """
-import cv2
+import cv2 as cv
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import jaccard_score
 import scipy.io as sio
+
+def checkDtype(obj, type):
+  """
+  Check the datatype of an object.
+
+  Arguments
+  ---------
+    obj: input object
+    type: type of input obj
+
+  Returns
+  -------
+    raise TypeError()
+
+  """
+  if isinstance(obj, type):
+    pass
+  else:
+    raise TypeError('Wrong data type, expecting :', type)
+
+def threshAdaptive(
+    img:np.ndarray, blur:int=5, maxval:int=255,blockSize:int=15, C:int=3
+    ):
+  """
+  Apply adaptive thresholding.
+  
+  Arguments
+  ---------
+  img: np array of an RGB or grayscale image
+  blur: value for median blur
+  maxval*: maximum pixel value of the image
+  blockSize*: pixel neighbour to calculate threshold
+  C*: constant to minus mean
+   *OpenCV adaptiveThreshold() args
+  
+  Returns
+  -------
+  thresh : np array of an img array
+
+  """
+  
+  # checking img input
+  if len(img.shape) == 3:
+    img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+  elif len(img.shape) == 2:
+    img = img
+  else:
+    raise Exception('Image input invalid.')
+  
+  # apply thresholding
+  thresh = cv.medianBlur(img,blur)
+  thresh = cv.adaptiveThreshold(
+      thresh, maxval, cv.THRESH_BINARY_INV, cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+      blockSize, C
+      )
+  
+  return thresh
+
+def threshOtsu(
+    img:np.ndarray, blur_kernel:tuple=(5,5), tval:int=0, maxval:int=255,
+    dilation:bool=True, iter:int=20, dilation_kernel:tuple=(10,10)
+    ):
+  """
+  Apply otsu thresholding followed by dilation.
+  
+  Arguments
+  ----------
+  img: np array of an RGB or grayscale image
+  blur_kernel: gaussian blur kernel
+  tval*: thresholding value
+  maxval*: thresholded value
+   *OpenCV threshold() args
+  dilation: threshold dilation
+  iter: dilation iteration
+  dilation_kernel: dilation kernel to apply
+
+  Returns
+  -------
+  thresh: np array of an thresholded img
+
+  """
+
+  ## checking image input
+  if len(img.shape) == 2:
+    img = img
+  elif len(img.shape) == 3:
+    raise Exception('Convert image to grayscale first.')
+  else:
+    raise Exception('Image input invalid.')
+  
+  ## apply thresholding
+  img = cv.GaussianBlur(img, blur_kernel, 0)
+  thresh = cv.threshold(
+      img, tval, maxval, cv.THRESH_BINARY_INV + cv.THRESH_OTSU
+      )[1]
+
+  ## apply dilation
+  if dilation == True:
+    for i in range(iter):
+      dilated = cv.dilate(thresh, dilation_kernel, iterations=i+1)
+    return dilated
+  else:
+    return thresh
+
+def removeDebris(img:np.ndarray, factor:float=0.01):
+  """
+  Remove small particles in an 2D image based on average contours.
+  
+  Arguments
+  ---------
+  img: an array of 2D image
+  factor: multiplier of average area of the image (the smaller the X1 value,
+   the bigger the particle size to be remove)
+  
+  Returns
+  -------
+  img: image array
+  
+  """
+
+  ## checking img input
+  if len(img.shape) != 2:
+    raise Exception('Only accept 2D image.')
+
+  ## determine average area
+  average_area = [] 
+  cnts = cv.findContours(img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+  cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+  for c in cnts:
+    x,y,w,h = cv.boundingRect(c)
+    area = w * h
+    average_area.append(area)
+  average = sum(average_area) / len(average_area)
+
+  ## remove debris
+  cnts = cv.findContours(img, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+  cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+  for c in cnts:
+    area = cv.contourArea(c)
+    if area < average * factor:
+      cv.drawContours(img, [c], -1, (0,0,0), -1)
+
+  return img
+
+
+
+#### OLD VERSION ####
 
 def thres_otsu(img, blur_kernel=(3,3), tval=0, maxval=255):
   '''
