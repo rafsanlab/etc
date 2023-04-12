@@ -93,7 +93,7 @@ def threshOtsu(
   Returns
   -------
     thresh: np array of an thresholded img
-
+ 
   """
 
   ## checking image input
