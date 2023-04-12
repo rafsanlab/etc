@@ -103,7 +103,7 @@ def threshOtsu(
     raise Exception('Convert image to grayscale first.')
   else:
     raise Exception('Image input invalid.')
-  
+   
   ## apply thresholding
   img = cv.GaussianBlur(img, blur_kernel, 0)
   if inverse == False:
