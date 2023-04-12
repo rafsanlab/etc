@@ -197,19 +197,20 @@ def readmat(filename):
       p = sp.reshape(sizex,h,w,order='C')
       return  w, h, p, wavenumber, sp
 
-def proarea(p,wavenumbers):
+def proArea(p:np.ndarray, wavenumbers:np.ndarray):
   """
   FTIR Image Reconstruction 
   Pixel Intensity = Area Under Curve of SPECTRUM
   
-  Parameters
-  ----------
+  Arguments
+  ---------
     sp(array) : (wavenumber,h,w)
     wavenumbers(array) : wavenumbers
 
   Returns
   -------
     cc(array) : h x w image projection
+    
   """
   
   i,j,k = np.shape(p)
@@ -219,7 +220,77 @@ def proarea(p,wavenumbers):
           for jj in range(0,k):
               cc[ii,jj]= np.trapz(p[:,ii,jj],wavenumbers)
   # cc = np.trapz(p[:,:,:],wavenumbers,axis=0)
+  
   return cc
+
+from sklearn.cluster import KMeans
+
+def proStd(p:np.ndarray):
+  """
+  Apply projection based on standard deviation to p.
+
+  Arguments
+  ---------
+    p : the datacube of ftir image
+
+  Returns
+  -------
+    img_std : image projection
+
+  """
+  img_std = np.zeros((p.shape[1],p.shape[2]))
+  for i in range(p.shape[1]):
+    for j in range(p.shape[2]):
+      img_std[i,j] = np.std(p[:,i,j])
+  return img_std
+
+def proKm(p:np.ndarray, k:int=2, img_size:tuple=(246, 256)):
+  """
+  Apply K-means to p.
+
+  Arguments
+  ---------
+    p : the datacube of ftir image
+    k : k value in K-means
+    img_size : final image projection size
+
+  Returns
+  -------
+    img : image projection
+
+  """
+  ## reorganise p channel
+  pk = np.moveaxis(p, 0, 2)
+  pk = pk.reshape(pk.shape[0] * pk.shape[1], pk.shape[2])
+  pk = pk.astype(float)
+
+  ## run k-means
+  model = KMeans(n_clusters=k, n_init='auto').fit_predict(pk)
+  img = model.reshape(img_size[0], img_size[1])
+  
+  return img
+
+def proKmInverse(img:np.ndarray, point:tuple=(0,0), background:int=0):
+  """
+  Inverse image of the K-mean results to standardise output.
+
+  Arguments
+  ---------
+    img : the K-means image projection (2D image)
+    point : background coordinate
+    background : background value (i.e; 1 or 0)
+
+  Returns
+  -------
+    img : inversed or not inversed image
+
+  """
+  if img[point[0], point[1]] != background:
+    img = cv.bitwise_not(img)
+    return img
+  else:
+    return img
+
 
 #### OLD VERSION ####
 
