@@ -10,6 +10,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import jaccard_score
+from sklearn.cluster import KMeans
 import scipy.io as sio
 
 def checkDtype(obj, type):
