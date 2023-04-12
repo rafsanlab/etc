@@ -159,6 +159,68 @@ def removeDebris(img:np.ndarray, factor:float=0.01):
 
   return img
 
+def removeHoles(
+    img:np.ndarray, factor:float=0.1, holes_kernel:tuple=(5,5),
+    iterations:int=2, inverse:bool=True
+    ):
+  """
+  Remove holes from an 2D image array.
+  
+  Arguments
+  ---------
+    img : an array of 2D image
+    factor : multiplier of average area size
+    holes_kernel : size of holes to be remove
+    interations : number of iterations 
+    inverse : inverse input
+
+  Returns
+  -------
+    close : image array
+
+  """
+
+  ## checking img input
+  if len(img.shape) != 2:
+    raise Exception('Only accept 2D image.')
+  if inverse == True:
+    img = cv.bitwise_not(img)
+    thresh = img
+  else:
+    img, thresh = img, img
+
+  ## determine average area
+  average_area = [] 
+  cnts = cv.findContours(thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+  cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+  for c in cnts:
+    x,y,w,h = cv.boundingRect(c)
+    area = w * h
+    average_area.append(area)
+  average = sum(average_area) / len(average_area)
+
+  ## close the holes
+  cnts = cv.findContours(img, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+  cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+  for c in cnts:
+    area = cv.contourArea(c)
+    if area < average * factor:
+      cv.drawContours(thresh, [c], -1, (0,0,0), -1)
+  
+  ## Morph close and invert image
+  kernel = cv.getStructuringElement(cv.MORPH_RECT, holes_kernel)
+  close = cv.morphologyEx(
+    thresh,cv.MORPH_CLOSE,
+    kernel, iterations=iterations
+    )
+  
+  ## inverse condition
+  if inverse == True:
+    close = cv.bitwise_not(close)
+    return close
+  else:
+    return close
+
 def readmat(filename):
   """
   function to read matlab file from OPUS FTIR Bruker
