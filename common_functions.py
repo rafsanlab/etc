@@ -59,7 +59,7 @@ def createdir(pathx:str, verbose=True):
   elif os.path.exists(pathx) == True:
     if verbose == True:
       print('Path already exist.')
-  return pathx
+#   return pathx
 
 def imgInfo(img):
   '''
