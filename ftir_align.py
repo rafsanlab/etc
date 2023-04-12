@@ -73,7 +73,7 @@ def threshAdaptive(
 
 def threshOtsu(
     img:np.ndarray, blur_kernel:tuple=(5,5), tval:int=0, maxval:int=255,
-    dilation:bool=True, iter:int=20, dilation_kernel:tuple=(10,10)
+    inverse:bool=False, dilation:bool=True, iter:int=20, dilation_kernel:tuple=(10,10)
     ):
   """
   Apply otsu thresholding followed by dilation.
@@ -85,6 +85,7 @@ def threshOtsu(
     tval* : thresholding value
     maxval* : thresholded value
       *OpenCV threshold() args
+    inverse : config of THRESH_BINARY or THRESH_BINARY_INV
     dilation : threshold dilation
     iter : dilation iteration
     dilation_kernel : dilation kernel to apply
@@ -105,9 +106,10 @@ def threshOtsu(
   
   ## apply thresholding
   img = cv.GaussianBlur(img, blur_kernel, 0)
-  thresh = cv.threshold(
-      img, tval, maxval, cv.THRESH_BINARY_INV + cv.THRESH_OTSU
-      )[1]
+	if inverse == False:
+    thresh = cv.threshold(img, tval, maxval, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
+  elif inverse == True:
+    thresh = cv.threshold(img, tval, maxval, cv.THRESH_BINARY_INV + cv.THRESH_OTSU)[1]
 
   ## apply dilation
   if dilation == True:
