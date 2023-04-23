@@ -9,6 +9,7 @@ Dublin, Ireland.
 from pathlib import Path
 import numpy as np
 import os
+import pathlib
 import re
 
 def getdata(PATH:str, FILE_FORMAT:str, VERBOSE:bool):
