@@ -9,6 +9,7 @@ Dublin, Ireland.
 from pathlib import Path
 import numpy as np
 import os
+import re
 
 def getdata(PATH:str, FILE_FORMAT:str, VERBOSE:bool):
   '''
@@ -80,6 +81,18 @@ def imgInfo(img):
   c = np.min(img)
   d = np.max(img)
   print(f'dtype:{a} | shape:{b} | min:{c} | max:{d}')
+
+def getFilename(filepath:pathlib.PosixPath, split:bool=True, split_items:str='[ ]'):
+  """
+  Return the filename at the end of path, with optional splitting.
+  
+  """
+  filename = filepath.parts[-1]
+  if split == True:
+    splitted = re.split(split_items, filename)
+    return splitted
+  elif split == False:
+    return filename
 
 def incontrast(img, lv, up, x=1):
   """
