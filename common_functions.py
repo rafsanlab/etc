@@ -118,3 +118,52 @@ def incontrast(img, lv, up, x=1):
   img = np.clip(img, minval, maxval)
   img = ((img-minval)/(maxval-minval)) * x
   return img
+
+def plotRxC(nrows=1, ncols=2, dpi=120, figsize=(9,3),
+            imgs=[], titles=[], title_size=10,
+            show=True, save=False, filename='rxc.png'):
+  '''
+  Plot X number of rows and columns subplot.
+  
+  Parameters
+  ----------
+  nrows = number of rows (1)
+  ncols = number of columns
+  dpi = dpi value of the figure
+  figsize = figure size
+  imgs  = list of image array to be plotted
+  titles  = list of titles in string
+  title_size  = title font size
+  show  = to show plot or not
+  save  = to save plot or not
+  filename : str of image name with img format
+
+  Return
+  ------
+  plt.show()
+
+  '''  
+  _, axs = plt.subplots(nrows, ncols, dpi=dpi, figsize=figsize)
+  for i in range(ncols): axs[i].imshow(imgs[i])  
+  if titles != []:
+    for i in range(ncols): axs[i].title.set_text(titles[i])
+    for i in range(ncols): axs[i].title.set_size(title_size)
+  for i in range(ncols): axs[i].set_axis_off()
+  #for ax in axs:
+    #ax.get_xaxis().set_ticks([])
+    #ax.get_yaxis().set_ticks([])
+    #ax.set_ylim(0,1)
+		#ax.minorticks_on()
+		#ax.grid()
+		#ax.legend()
+  plt.tight_layout()
+  #---
+  if show != True:
+    plt.ioff()
+  else:
+    plt.show;
+  #---
+  if save == True:
+    plt.savefig(filename, transparent=True, dpi=dpi)
+    plt.close()
+  else: pass
