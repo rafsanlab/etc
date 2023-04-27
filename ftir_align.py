@@ -855,17 +855,28 @@ def plotRxC(nrows=1, ncols=2, dpi=120, figsize=(9,3),
 		#ax.minorticks_on()
 		#ax.grid()
 		#ax.legend()
+		
+#   plt.tight_layout()
+#   #---
+#   if show != True:
+#     plt.ioff()
+#   else:
+#     plt.show;
+#   #---
+#   if save == True:
+#     plt.savefig(filename, transparent=True, dpi=dpi)
+#     plt.close()
+#   else: pass
+
   plt.tight_layout()
-  #---
-  if show != True:
-    plt.ioff()
-  else:
-    plt.show;
-  #---
   if save == True:
     plt.savefig(filename, transparent=True, dpi=dpi)
+  if show == False:
+    plt.ioff()
     plt.close()
-  else: pass
+  elif show == True:
+    plt.show(block=False);
+    plt.close()
 
 #---------------------------------------
 
