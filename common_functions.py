@@ -63,6 +63,28 @@ def createdir(pathx:str, verbose=True):
       print('Path already exist.')
 #   return pathx
 
+import os
+import urllib.request
+
+def getFonts_inColab():
+    """
+    use to get fonts based on URLs, renamed and put into a font family folder in colab
+    
+    """
+    font_dir = '/usr/share/fonts/truetype/san-serif'
+    os.makedirs(font_dir, exist_ok=True)
+
+    fonts = [
+        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIAL.TTF', 'Arial-Regular.ttf'),
+        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIALBD.TTF', 'Arial-Bold.ttf'),
+        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIALI.TTF', 'Arial-Italic.ttf')
+    ]
+
+    for url, filename in fonts:
+        font_path = os.path.join(font_dir, filename)
+        urllib.request.urlretrieve(url, font_path)
+      
+
 def imgInfo(img):
   '''
   Function to print image (np.array) details
