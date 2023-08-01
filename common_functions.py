@@ -6,11 +6,75 @@ Dublin, Ireland.
 
 """
 
-from pathlib import Path
 import numpy as np
 import os
 import pathlib
 import re
+
+def get_data(path:str, file_type:str, verbose:bool):
+  """
+  Get files from path with sepsific file types.
+
+  Args:
+        path(str): string path containing the files
+        file_type(str): file type such as '.png'
+        verbose(bool): condition of output summary
+  Return:
+        paths(list): list of paths
+  """
+
+  path = pathlib.Path(path)
+  lookfor = '*' + file_type
+  paths = list(path.glob(lookfor))
+  paths = sorted(paths)
+  if verbose == True:
+    print(f'Total paths: {len(paths)}')
+  else:
+    pass
+    
+  return paths
+
+def get_filename(filepath, pattern:str, n=3, separator='_'):
+    """
+    Modify the filename from a_b_c_n.d to a_b_c (if pattern='[._]' and n=3).
+    
+    Args:
+        filepath (str): File path.
+        pattern (str): re.split argument i.e: '[._]'.
+        n (int): First number of names to be keep.
+        separator (str): Name separator for final output.
+    
+    Return:
+        str: Modified filename.
+    """
+
+    filename = filepath.parts[-1] 
+    filename_parts = re.split(pattern, filename)
+    modified_filename = ''
+    for i in range(n):
+        modified_filename += filename_parts[i]
+        if i != n:
+            """ this condition check last filename_parts so that
+                no separator at the modified_filename end """
+            modified_filename += separator
+    # modified_filename = f"{filename_parts[0]}_{filename_parts[1]}_{filename_parts[2]}"
+    
+    return modified_filename
+
+
+
+
+
+
+
+
+
+
+
+
+# old version of codes :
+
+from pathlib import Path
 
 def getdata(PATH:str, FILE_FORMAT:str, VERBOSE:bool):
   '''
