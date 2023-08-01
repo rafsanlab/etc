@@ -50,13 +50,13 @@ def get_filename(filepath, pattern:str, n=3, separator='_'):
     Return:
         str: Modified filename.
     """
-
+    filepath = pathlib.Path(filepath)
     filename = filepath.parts[-1] 
-    filename_parts = re.split(pattern, filename)
+    filename_parts = re.split(pattern, str(filename))
     modified_filename = ''
     for i in range(n):
         modified_filename += filename_parts[i]
-        if i != n:
+        if i != n-1:
             """ this condition check last filename_parts so that
                 no separator at the modified_filename end """
             modified_filename += separator
