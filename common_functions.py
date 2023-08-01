@@ -63,6 +63,24 @@ def get_filename(filepath, pattern:str, n=3, separator='_'):
     # modified_filename = f"{filename_parts[0]}_{filename_parts[1]}_{filename_parts[2]}"
     
     return modified_filename
+  
+
+def create_dir(path:str, verbose=True):
+    """
+    Function to create directory if not exist.
+
+    Args:
+        path(str): path directory.
+        verbose(bool): output condition status.
+    
+    """
+    
+    path = pathlib.Path(path)
+    if os.path.exists(path) == False:
+        os.makedirs(path)
+        if verbose == True: print('Path created.')
+    elif os.path.exists(path) == True:
+        if verbose == True: print('Path already exist.')
 
 
 def get_fonts_in_Colab():
