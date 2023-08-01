@@ -10,6 +10,8 @@ import numpy as np
 import os
 import pathlib
 import re
+import urllib.request
+
 
 def get_data(path:str, file_type:str, verbose:bool):
   """
@@ -33,6 +35,7 @@ def get_data(path:str, file_type:str, verbose:bool):
     pass
     
   return paths
+
 
 def get_filename(filepath, pattern:str, n=3, separator='_'):
     """
@@ -61,6 +64,21 @@ def get_filename(filepath, pattern:str, n=3, separator='_'):
     
     return modified_filename
 
+
+def get_fonts_in_Colab():
+    """ Allow user to install fonts from the URL into Colab. This give option to use custom font
+        especially in Matplotlib. Fonts will be rename to fit Colab standard. """
+  
+    font_dir = '/usr/share/fonts/truetype/san-serif'
+    os.makedirs(font_dir, exist_ok=True)
+    fonts = [
+        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIAL.TTF', 'Arial-Regular.ttf'),
+        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIALBD.TTF', 'Arial-Bold.ttf'),
+        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIALI.TTF', 'Arial-Italic.ttf')
+    ]
+    for url, filename in fonts:
+        font_path = os.path.join(font_dir, filename)
+        urllib.request.urlretrieve(url, font_path)
 
 
 
