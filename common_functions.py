@@ -78,7 +78,7 @@ def create_dir(path:str, verbose=True):
     path = pathlib.Path(path)
     if os.path.exists(path) == False:
         os.makedirs(path)
-        if verbose == True: print('Path created.')
+        if verbose == True: print('Path created: \t', path)
     elif os.path.exists(path) == True:
         if verbose == True: print('Path already exist.')
 
