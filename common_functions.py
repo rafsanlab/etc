@@ -37,7 +37,7 @@ def get_data(path:str, file_type:str, verbose:bool):
   return paths
 
 
-def get_filename(filepath, pattern:str, n=3, separator='_'):
+def get_fname(filepath, pattern:str, n=3, separator='_'):
     """
     Modify the filename from a_b_c_n.d to a_b_c (if pattern='[._]' and n=3).
     
@@ -65,6 +65,22 @@ def get_filename(filepath, pattern:str, n=3, separator='_'):
     return modified_filename
   
 
+def get_fonts_in_Colab():
+    """ Allow user to install fonts from the URL into Colab. This give option to use custom font
+        especially in Matplotlib. Fonts will be rename to fit Colab standard. """
+  
+    font_dir = '/usr/share/fonts/truetype/san-serif'
+    os.makedirs(font_dir, exist_ok=True)
+    fonts = [
+        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIAL.TTF', 'Arial-Regular.ttf'),
+        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIALBD.TTF', 'Arial-Bold.ttf'),
+        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIALI.TTF', 'Arial-Italic.ttf')
+    ]
+    for url, filename in fonts:
+        font_path = os.path.join(font_dir, filename)
+        urllib.request.urlretrieve(url, font_path)
+
+
 def create_dir(path:str, verbose=True):
     """
     Function to create directory if not exist.
@@ -83,20 +99,6 @@ def create_dir(path:str, verbose=True):
         if verbose == True: print('Path already exist.')
 
 
-def get_fonts_in_Colab():
-    """ Allow user to install fonts from the URL into Colab. This give option to use custom font
-        especially in Matplotlib. Fonts will be rename to fit Colab standard. """
-  
-    font_dir = '/usr/share/fonts/truetype/san-serif'
-    os.makedirs(font_dir, exist_ok=True)
-    fonts = [
-        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIAL.TTF', 'Arial-Regular.ttf'),
-        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIALBD.TTF', 'Arial-Bold.ttf'),
-        ('https://github.com/rafsanlab/etc/raw/main/Fonts/Arial/ARIALI.TTF', 'Arial-Italic.ttf')
-    ]
-    for url, filename in fonts:
-        font_path = os.path.join(font_dir, filename)
-        urllib.request.urlretrieve(url, font_path)
 
 
 
@@ -162,6 +164,33 @@ def createdir(pathx:str, verbose=True):
     if verbose == True:
       print('Path already exist.')
 #   return pathx
+
+def get_filename(filepath, pattern:str, n=3, separator='_'):
+    """
+    Modify the filename from a_b_c_n.d to a_b_c (if pattern='[._]' and n=3).
+    
+    Args:
+        filepath (str): File path.
+        pattern (str): re.split argument i.e: '[._]'.
+        n (int): First number of names to be keep.
+        separator (str): Name separator for final output.
+    
+    Return:
+        str: Modified filename.
+    """
+    filepath = pathlib.Path(filepath)
+    filename = filepath.parts[-1] 
+    filename_parts = re.split(pattern, str(filename))
+    modified_filename = ''
+    for i in range(n):
+        modified_filename += filename_parts[i]
+        if i != n-1:
+            """ this condition check last filename_parts so that
+                no separator at the modified_filename end """
+            modified_filename += separator
+    # modified_filename = f"{filename_parts[0]}_{filename_parts[1]}_{filename_parts[2]}"
+    
+    return modified_filename
 
 import os
 import urllib.request
