@@ -65,6 +65,15 @@ def get_fname(filepath, pattern:str, n=3, separator='_'):
     return modified_filename
   
 
+def get_folder_size(folder_path):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(folder_path):
+        for filename in filenames:
+            filepath = os.path.join(dirpath, filename)
+            total_size += os.path.getsize(filepath)
+    return total_size
+
+
 def get_fonts_in_Colab():
     """ Allow user to install fonts from the URL into Colab. This give option to use custom font
         especially in Matplotlib. Fonts will be rename to fit Colab standard. """
