@@ -8,6 +8,7 @@ Dublin, Ireland.
 
 import numpy as np
 import os
+import shutil
 import pathlib
 import re
 import urllib.request
@@ -108,17 +109,48 @@ def create_dir(path:str, verbose=True):
         if verbose == True: print('Path already exist.')
 
 
+def move_folders_contents(source_directory, target_directory, verbose=True):
+    """
+    function to move contents of source folder to target folder
+    
+    Example:
+        >>> dir1/content...n
+        >>> dir2/content...n
+
+    """
+    
+    # Check if both source and target directories exist
+    if not os.path.exists(source_directory):
+        print(f"Source directory '{source_directory}' does not exist.")
+        return
+
+    if not os.path.exists(target_directory):
+        print(f"Target directory '{target_directory}' does not exist.")
+        return
+
+    # Get the list of items (folders and files) in the source directory
+    items = os.listdir(source_directory)
+
+    for item in items:
+        
+        # Construct the full path of the item
+        source_path = os.path.join(source_directory, item)
+
+        # Check if the item is a directory
+        if os.path.isdir(source_path):
+            # Construct the destination path in the target directory
+            target_path = os.path.join(target_directory, item)
+
+            # Move the entire directory to the target directory
+            shutil.move(source_path, target_path)
+            if verbose:
+                print(f"Moved '{item}' to '{target_directory}'")
 
 
 
 
 
-
-
-
-
-
-
+# ------------------------------------------------------------------------
 # old version of codes :
 
 from pathlib import Path
