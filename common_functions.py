@@ -5,13 +5,13 @@ Dublin, Ireland.
 @author: Rafsanjani @rafsanlab
 
 """
-
 import numpy as np
 import os
 import shutil
 import pathlib
 import re
 import urllib.request
+import zipfile
 
 
 def get_data(path:str, file_type:str, verbose:bool):
@@ -147,7 +147,29 @@ def move_folders_contents(source_directory, target_directory, verbose=True):
                 print(f"Moved '{item}' to '{target_directory}'")
 
 
+def zip_folder(source_folder, output_filename):
+    """
+    Zip target folder and its contents.
 
+    # Example:
+        >>> source_folder = '/content/patches64/train'
+        >>> output_filename = '/content/patches64/train' # '/train' here will be 'train.zip'
+        >>> zip_folder(source_folder, output_filename)  
+    """
+    shutil.make_archive(output_filename, 'zip', source_folder)
+
+
+def unzip_folder(zip_filename, extract_folder):
+    """
+    Unzip target folder to target output folder.
+
+    # Example:
+        >>> zip_filename = '/content/metadata.zip'
+        >>> extract_folder = '/content/metadata'
+        >>> unzip_folder(zip_filename, extract_folder)
+    """
+    with zipfile.ZipFile(zip_filename, 'r') as zip_ref:
+        zip_ref.extractall(extract_folder)
 
 
 # ------------------------------------------------------------------------
