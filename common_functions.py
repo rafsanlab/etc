@@ -196,8 +196,8 @@ def move_folders_contents(source_directory, target_directory, verbose=True):
         source_path = os.path.join(source_directory, item)
         target_path = os.path.join(target_directory, item)
         shutil.move(source_path, target_path)
-            if verbose:
-        print(f"Moved '{item}' to '{target_directory}'")
+        if verbose:
+            print(f"Moved '{item}' to '{target_directory}'")
 
         # # Check if the item is a directory
         # if os.path.isdir(source_path):
