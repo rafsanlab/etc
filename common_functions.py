@@ -109,6 +109,64 @@ def create_dir(path:str, verbose=True):
         if verbose == True: print('Path already exist.')
 
 
+def create_project_dir(project_dir='', sub_dirs=[], verbose=True, return_dict=False):
+    """
+    A function to create a main dir, then sub dirs inside.
+    Optional to return dict to the paths usinf sub_dirs as keys.
+
+        """
+    # Create main directory
+    current_dir = os.getcwd()
+    project_dir = os.path.join(current_dir, project_dir)
+
+    # Create subdirectories
+    if len(sub_dirs) > 0:
+        dirs = {sub_dir: os.path.join(project_dir, sub_dir) for sub_dir in sub_dirs}
+
+    # Create directories
+    dirs['project_dir'] = project_dir
+    for dir_k, dir_v in dirs.items():
+
+        if os.path.exists(dir_v) == False:
+            os.makedirs(dir_v)
+            if verbose == True: print('Path created: \t', dir_v)
+        elif os.path.exists(dir_v) == True:
+            if verbose == True: print('Path exist: \t', dir_v)
+
+    # Return dict
+    if return_dict == True:
+        return dirs
+    
+
+def copycut_contents(sourcedir, targetdir, verbose=True):
+    """
+    A function to move contents of source folder to target folder.
+
+    """
+    
+    if not os.path.exists(sourcedir):
+        print(f"sourcedir not exist : '{sourcedir}")
+        return
+    
+    if not os.path.exists(targetdir):
+        os.makedirs(targetdir)
+        print(f"Created directory : '{targetdir}")
+    
+    base_dir = os.path.basename(sourcedir)
+
+    items = os.listdir(sourcedir)
+
+    for item in items:
+        
+        source_path = os.path.join(sourcedir, item)
+        target_path = os.path.join(targetdir, base_dir, item)
+        if not os.path.exists(target_path):
+            os.makedirs(target_path)
+        shutil.move(source_path, target_path)
+        if verbose:
+            print(f"Moved '{item}' ->>> '{targetdir}'")
+
+
 def move_folders_contents(source_directory, target_directory, verbose=True):
     """
     function to move contents of source folder to target folder
@@ -118,15 +176,16 @@ def move_folders_contents(source_directory, target_directory, verbose=True):
         >>> dir2/content...n
 
     """
-    
+    print('This function will be remove, please use copycut_contents()')
     # Check if both source and target directories exist
     if not os.path.exists(source_directory):
-        print(f"Source directory '{source_directory}' does not exist.")
+        
+        print(f"source_directory not exist : '{source_directory}")
         return
-
+    
     if not os.path.exists(target_directory):
-        print(f"Target directory '{target_directory}' does not exist.")
-        return
+        os.makedirs(target_directory)
+        print(f"Create directory : '{target_directory}")
 
     # Get the list of items (folders and files) in the source directory
     items = os.listdir(source_directory)
@@ -135,16 +194,20 @@ def move_folders_contents(source_directory, target_directory, verbose=True):
         
         # Construct the full path of the item
         source_path = os.path.join(source_directory, item)
-
-        # Check if the item is a directory
-        if os.path.isdir(source_path):
-            # Construct the destination path in the target directory
-            target_path = os.path.join(target_directory, item)
-
-            # Move the entire directory to the target directory
-            shutil.move(source_path, target_path)
+        target_path = os.path.join(target_directory, item)
+        shutil.move(source_path, target_path)
             if verbose:
-                print(f"Moved '{item}' to '{target_directory}'")
+        print(f"Moved '{item}' to '{target_directory}'")
+
+        # # Check if the item is a directory
+        # if os.path.isdir(source_path):
+        #     # Construct the destination path in the target directory
+        #     target_path = os.path.join(target_directory, item)
+
+        #     # Move the entire directory to the target directory
+        #     shutil.move(source_path, target_path)
+        #     if verbose:
+        #         print(f"Moved '{item}' to '{target_directory}'")
 
 
 def zip_folder(source_folder, output_filename):
