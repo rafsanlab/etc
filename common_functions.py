@@ -138,33 +138,44 @@ def create_project_dir(project_dir='', sub_dirs=[], verbose=True, return_dict=Fa
         return dirs
     
 
-def copycut_contents(sourcedir, targetdir, verbose=True):
+
+def copycut_dir(sourcedir, targetdir, verbose=True):
     """
-    A function to move contents of source folder to target folder.
+    A function to move contents of source folder/file to target folder.
 
     """
-    
+
     if not os.path.exists(sourcedir):
         print(f"sourcedir not exist : '{sourcedir}")
         return
-    
-    if not os.path.exists(targetdir):
-        os.makedirs(targetdir)
-        print(f"Created directory : '{targetdir}")
-    
+
     base_dir = os.path.basename(sourcedir)
+    
+    # moving sourcedir as a folder 
+    if os.path.isdir(sourcedir):
 
-    items = os.listdir(sourcedir)
-
-    for item in items:
+        targetdircut = os.path.join(targetdir, base_dir)
+        if not os.path.exists(targetdircut):
+            os.makedirs(targetdircut)
+            print(f"Created directory : '{targetdircut}")
+            
+        items = os.listdir(sourcedir) 
+        for item in items:
+            source_path = os.path.join(sourcedir, item)
+            target_path = os.path.join(targetdircut, item)
+            shutil.move(source_path, target_path)
+            if verbose:
+                print(f"Moved '{item}' ->>> '{targetdircut}'")
+    
+    # moving sourcedir as a file
+    else:
         
-        source_path = os.path.join(sourcedir, item)
-        target_path = os.path.join(targetdir, item)
-        if not os.path.exists(target_path):
-            os.makedirs(target_path)
-        shutil.move(source_path, target_path)
-        if verbose:
-            print(f"Moved '{item}' ->>> '{targetdir}'")
+        if not os.path.exists(targetdir):
+            os.makedirs(targetdir)
+            print(f"Created directory : '{targetdir}")
+        
+        shutil.move(sourcedir, targetdir)
+        print(f"Moved '{sourcedir}' ->>> '{targetdir}'")
 
 
 def move_folders_contents(source_directory, target_directory, verbose=True):
@@ -176,7 +187,7 @@ def move_folders_contents(source_directory, target_directory, verbose=True):
         >>> dir2/content...n
 
     """
-    print('This function will be remove, please use copycut_contents()')
+    print('This function will be remove, please use copycut_dir()')
     # Check if both source and target directories exist
     if not os.path.exists(source_directory):
         
