@@ -159,7 +159,7 @@ def copycut_contents(sourcedir, targetdir, verbose=True):
     for item in items:
         
         source_path = os.path.join(sourcedir, item)
-        target_path = os.path.join(targetdir, base_dir, item)
+        target_path = os.path.join(targetdir, item)
         if not os.path.exists(target_path):
             os.makedirs(target_path)
         shutil.move(source_path, target_path)
