@@ -246,6 +246,46 @@ def unzip_folder(zip_filename, extract_folder):
         zip_ref.extractall(extract_folder)
 
 
+def match_fname(list1:list, list2:list, method:str='direct',
+                split_pattern:str=None, split_n:int=None):
+    """
+    Match files from two lists by their names.
+
+    Args:
+        list1 (list): List of file paths.
+        list2 (list): List of file paths.
+
+    Returns:
+        file_dict: A dictionary where keys are file names and values are tuples of matching paths from both lists.
+    """
+    file_dict = {}
+
+    if method=='direct':
+
+        for path1 in list1:
+            filename1 = os.path.basename(path1)
+            for path2 in list2:
+                filename2 = os.path.basename(path2)
+                if filename1 == filename2:
+                    file_dict[filename1] = (path1, path2)
+                    break  #<- once a match is found, no need to continue checking
+
+    elif method=='split' and split_pattern!=None:
+
+        for path1 in list1:
+            filename1 = get_filename(path1, split_pattern, split_n)
+            for path2 in list2:
+                filename2 = get_filename(path2, split_pattern, split_n)
+                if filename1 == filename2:
+                    file_dict[filename1] = (path1, path2) ##???
+                    break
+
+    else:
+        print('Either invalide "method" arg (direct or split) of "split_pattern" not specified.')
+
+    return file_dict
+
+
 # ------------------------------------------------------------------------
 # old version of codes :
 
