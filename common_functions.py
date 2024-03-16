@@ -64,7 +64,7 @@ def get_fname(filepath, pattern:str, n=3, separator='_'):
     # modified_filename = f"{filename_parts[0]}_{filename_parts[1]}_{filename_parts[2]}"
     
     return modified_filename
-  
+
 
 def get_folder_size(folder_path):
     total_size = 0
@@ -136,7 +136,6 @@ def create_project_dir(project_dir='', sub_dirs=[], verbose=True, return_dict=Fa
     # Return dict
     if return_dict == True:
         return dirs
-    
 
 
 def copycut_dir(sourcedir, targetdir, verbose=True):
@@ -284,6 +283,45 @@ def match_fname(list1:list, list2:list, method:str='direct',
         print('Either invalide "method" arg (direct or split) of "split_pattern" not specified.')
 
     return file_dict
+
+
+# def match_fname(list1:list, list2:list, method='direct', split_pattern=None, split_n=None):
+#     """
+#     Match files from two lists by their names.
+
+#     Args:
+#         list1 (list): List of file paths.
+#         list2 (list): List of file paths.
+
+#     Returns:
+#         file_dict: A dictionary where keys are file names and values are tuples of matching paths from both lists.
+#     """
+#     file_dict = {}
+
+#     if method=='direct':
+
+#         for path1 in list1:
+#             filename1 = os.path.basename(path1)
+#             for path2 in list2:
+#                 filename2 = os.path.basename(path2)
+#                 if filename1 == filename2:
+#                     file_dict[filename1] = (path1, path2)
+#                     break  #<- once a match is found, no need to continue checking
+
+#     elif method=='split' and split_pattern!=None:
+
+#         for path1 in list1:
+#             filename1 = get_filename(path1, split_pattern, split_n)
+#             for path2 in list2:
+#                 filename2 = get_filename(path2, split_pattern, split_n)
+#                 if filename1 == filename2:
+#                     file_dict[filename1] = (path1, path2) ##???
+#                     break
+
+#     else:
+#         print('Either invalide "method" arg (direct or split) of "split_pattern" not specified.')
+
+#     return file_dict
 
 
 # ------------------------------------------------------------------------
